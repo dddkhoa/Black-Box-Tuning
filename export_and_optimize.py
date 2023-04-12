@@ -102,9 +102,9 @@ if __name__ == '__main__':
     is_deep = args.deep
     print(is_deep)
     if is_deep:
-        from deep_modeling_roberta import RobertaModel
+        from models.deep_modeling_roberta import RobertaModel
     else:
-        from modeling_roberta import RobertaModel
+        from models.modeling_roberta import RobertaModel
 
     if args.cat_or_add not in ['add', 'cat']:
         raise ValueError(f'Argument `cat_or_add` only supports `cat` and `add`, got `{args.cat_or_add}` instead.')
