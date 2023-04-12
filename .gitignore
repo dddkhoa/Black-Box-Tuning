@@ -2,3 +2,5 @@
 .fitconfig
 logs
 __pycache__
+.idea
+caches
