@@ -7,6 +7,6 @@ python bbt.py \
   --seed 42 \
   --loss_type "ce" \
   --cat_or_add "add" \
-  --budget 8000 \
+  --budget 500 \
   --print_every 50 \
   --eval_every 100
