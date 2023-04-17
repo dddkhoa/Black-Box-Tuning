@@ -7,6 +7,6 @@ python bayesian_opt.py \
   --seed 42 \
   --loss_type "ce" \
   --cat_or_add "add" \
-  --budget 500 \
+  --budget 200 \
   --print_every 50 \
   --eval_every 100

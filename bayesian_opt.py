@@ -24,6 +24,7 @@ from transformers import (
     GPT2Tokenizer,
     BartConfig as CPTConfig,
 )
+
 from models.modeling_roberta import RobertaForMaskedLM
 from models.modeling_bart import BartForConditionalGeneration
 from models.modeling_t5 import T5ForConditionalGeneration
@@ -131,7 +132,7 @@ if inference_framework == 'ort':
 if cat_or_add == 'add':
     init_prompt_path = None
 else:
-    init_prompt_path = './nli_base_prompt.pt'
+    init_prompt_path = 'nli_base_prompt.pt'
 
 if task_name in ['sst2', 'yelpp', 'rte', 'mrpc', 'chnsent', 'lcqmc', 'bq']:
     num_labels = 2
@@ -402,11 +403,14 @@ class LMForwardAPI:
 
         return loss, perf
 
-    def eval(self, prompt_embedding=None, test_data=None):
+    def eval(self, prompt_embedding=None, test_data=None, **kwargs):
         self.num_call += 1
         if prompt_embedding is None:
             prompt_embedding = self.best_prompt
         if test_data is None:
+            # BayesianOptimization does not call .eval() after each iteration -> manually set best_prompt
+            print(self.num_call)
+            prompt_embedding = np.array(list(kwargs.values()))
             bsz = len(dev_data['input_ids'])  # batch size of dev data is the orignal batch size of training data
         else:
             bsz = batch_size  # for test data
@@ -708,19 +712,14 @@ model_forward_api = LMForwardAPI(
     init_prompt_path=init_prompt_path
 )
 
+pbounds = {f'x{i}': (-5, 5) for i in range(intrinsic_dim)}
 
-def optimize_model(model_forward_api, seed, popsize, budget, bound, intrinsic_dim, sigma):
-    def fitness(**params):
-        x = [params[f'x{i}'] for i in range(intrinsic_dim)]
-        return model_forward_api.eval(x)
-
-    pbounds = {f'x{i}': (-1 * bound, 1 * bound) for i in range(intrinsic_dim)}
-    optimizer = BayesianOptimization(f=fitness, pbounds=pbounds, random_state=seed, verbose=0)
-
-    optimizer.maximize(init_points=intrinsic_dim, n_iter=budget // popsize)
-
-    return optimizer.max['params'], optimizer.max['target']
-
+optimizer = BayesianOptimization(
+    f=model_forward_api.eval,
+    pbounds=pbounds,
+    random_state=seed,
+    verbose=0,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+)
 
 print('Population Size: {}'.format(popsize))
 print('{} Evaluation.'.format('Parallel' if parallel else 'Serial'))
@@ -732,7 +731,10 @@ if parallel:
     train_data['labels'] = train_data['labels'].repeat(popsize)
 
 start_time = time.time()
-params, target = optimize_model(model_forward_api, seed, popsize, budget, bound, intrinsic_dim, sigma)
+optimizer.maximize(init_points=popsize, n_iter=budget if parallel else budget // popsize)
+
+# BayesianOptimization does not call .eval() after each iteration -> manually set best_prompt
+model_forward_api.best_prompt = np.array(list(optimizer.max['params'].values()))
 end_time = time.time()
 print('Done. Elapsed time: {} (mins)'.format((end_time - start_time) / 60))
 print('Evaluate on test data...')
