@@ -1,4 +1,14 @@
 # Black-Box-Tuning for Language-Model-as-a-Service
+
+## Using Bayesian Optimization
+
+Using [this library](https://github.com/fmfn/BayesianOptimization), with `budget=200`, we can obtain the following results:
+
+| SST-2 split<br/>Test set | Best Accuracy <br/> (CMA-ES/Bayes-Opt) | # API Calls<br/>(CMA-ES/Bayes-Opt) |
+|--------------------------|----------------------------------------|------------------------------------|
+| Sequential               | 83.03% / 83.26%                        | 200 / 30                           |
+| Parallel                 | [...]% / [...]%                        | [...] / [...]                      |
+
 ## Updates
 
 - 2022/10/14: Release the latest version of BBTv2, check out the [updated results](https://docs.google.com/spreadsheets/d/1FA9zMW613OoskI_fBXuZNNBVo7RFV5OvdZ0YHnA2j5Q/edit?usp=sharing). :mag:
