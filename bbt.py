@@ -738,6 +738,7 @@ while not es.stop():
     # es.disp()
 end_time = time.time()
 print('Done. Elapsed time: {} (mins)'.format((end_time - start_time) / 60))
+print(f'Total # of API calls: {model_forward_api.num_call}')
 print('Evaluate on test data...')
 test_acc = model_forward_api.eval(test_data=test_data)
 print('Test acc: {}'.format(round(test_acc, 4)))

@@ -409,7 +409,6 @@ class LMForwardAPI:
             prompt_embedding = self.best_prompt
         if test_data is None:
             # BayesianOptimization does not call .eval() after each iteration -> manually set best_prompt
-            print(self.num_call)
             prompt_embedding = np.array(list(kwargs.values()))
             bsz = len(dev_data['input_ids'])  # batch size of dev data is the orignal batch size of training data
         else:
@@ -731,12 +730,17 @@ if parallel:
     train_data['labels'] = train_data['labels'].repeat(popsize)
 
 start_time = time.time()
-optimizer.maximize(init_points=popsize, n_iter=budget if parallel else budget // popsize)
+
+# Choose Acquisition function 
+from bayes_opt.util import UtilityFunction
+acquisition_function = UtilityFunction(kind='ei', xi=1e-4)  # prefer exploitation
+optimizer.maximize(init_points=popsize, n_iter=budget//popsize, acquisition_function=acquisition_function)
 
 # BayesianOptimization does not call .eval() after each iteration -> manually set best_prompt
 model_forward_api.best_prompt = np.array(list(optimizer.max['params'].values()))
 end_time = time.time()
 print('Done. Elapsed time: {} (mins)'.format((end_time - start_time) / 60))
+print(f'Total # of API calls: {model_forward_api.num_call}')
 print('Evaluate on test data...')
 test_acc = model_forward_api.eval(test_data=test_data)
 print('Test acc: {}'.format(round(test_acc, 4)))
