@@ -1,0 +1,36 @@
+Expected Improvement (Run with intrinsic_dim = 500)
+
+a. Exploitation (acquisition_function = UtilityFunction(kind='ei', xi=1e-4))
+    
+Budget:2000
+#API Calls:121
+Test Acc:0.8314220183486238
+
+Budget:4000
+#API Calls:221
+Test Acc:0.8302752293577982
+
+Budget:6000
+#API Calls:321
+Test Acc:0.8245412844036697
+
+Budget:8000
+#API Calls:421
+Test Acc:0.8325688073394495
+
+b. Exploration (acquisition_function = UtilityFunction(kind='ei', xi=1e-1))
+Budget:2000
+#API Calls:121
+Test Acc:0.8302752293577982
+
+Budget:4000
+#API Calls:221
+Test Acc:0.8302752293577982
+
+Budget:6000
+#API Calls:321
+Test Acc:0.8302752293577982
+
+Budget:8000
+#API Calls:421
+Test Acc:0.8268348623853211
