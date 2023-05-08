@@ -2,12 +2,8 @@
 
 ## Using Bayesian Optimization
 
-Using [this library](https://github.com/fmfn/BayesianOptimization), with `budget=200`, we can obtain the following results:
-
-| SST-2 split<br/>Test set | Best Accuracy <br/> (CMA-ES/Bayes-Opt) | # API Calls<br/>(CMA-ES/Bayes-Opt) |
-|--------------------------|----------------------------------------|------------------------------------|
-| Sequential               | 83.03% / 83.26%                        | 200 / 30                           |
-| Parallel                 | [...]% / [...]%                        | [...] / [...]                      |
+- ### Results plots are in `plots` folder
+- ### Detailed records are  in `runrecords` folder
 
 ## Updates
 
