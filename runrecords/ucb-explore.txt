@@ -1,0 +1,25 @@
+ucb-explore
+
+budget: 2000
+api_calls: 120
+test_acc: 0.8394
+
+budget: 4000
+api_calls: 220
+test_acc: 0.8475
+
+budget: 6000
+api_calls: 320
+test_acc: 0.8475
+
+budget: 8000
+api_calls: 420
+test_acc: 0.8475
+
+budget: 10000
+api_calls: 520
+test_acc: 0.8486
+
+budget: 12000
+api_call: 620
+test_acc: 0.8486
